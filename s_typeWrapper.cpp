@@ -2,7 +2,6 @@
  * Juntong Liu 
  *          2023-July-10 
  * 
- * Wrap differet types with an interface into an unified wrapper type so that they can be managed together.
  */
 
 #include <iostream>
@@ -83,49 +82,8 @@ struct TypeFoo{
         int mult;
 }; 
 
-// .... more types/modules....
+// ...
 
-class ModulesList{
-    public:
-        ModulesList(int i = 0) : m_count{i}{};
-        ~ModulesList() = default;
 
-        void addObject(std::unique_ptr<TypeWrapper> obj){
-            m_obj_list.push_back(std::move(obj));
-            m_count++;
-        };
 
-        void runModules() { 
-            for (std::vector<std::unique_ptr<TypeWrapper>>::iterator it =  m_obj_list.begin(); 
-                it != m_obj_list.end(); it++){ 
-                std::cout << (*it)->InterfaceFunc() << '\n';
-            }
-        }
 
-        void printCount() const {
-            std::cout << "Count = " << m_count << '\n'; }
-
-    private:
-        std::vector<std::unique_ptr<TypeWrapper>> m_obj_list;
-        int m_count;
-};
-
-int main(){
-
-    ModulesList modules;
-
-    std::shared_ptr<TypeBar> bp = std::make_shared<TypeBar>(1.1, 1.1); 
-    std::shared_ptr<Model<TypeBar>> pmb = std::make_shared<Model<TypeBar>>(bp); 
-    std::unique_ptr<TypeWrapper> ombp = std::make_unique<TypeWrapper>(pmb);
-    modules.addObject(std::move(ombp));
-
-    std::shared_ptr<TypeFoo> fp = std::make_shared<TypeFoo>(22, 22);
-    std::shared_ptr<Model<TypeFoo>> pmf = std::make_shared<Model<TypeFoo>>(fp);
-    std::unique_ptr<TypeWrapper> omfp = std::make_unique<TypeWrapper>(pmf);
-    modules.addObject(std::move(omfp));
-
-    modules.runModules();
-    modules.printCount();
-
-    return 0;
-}
