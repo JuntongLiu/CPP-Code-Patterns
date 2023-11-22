@@ -1,5 +1,7 @@
+// Juntong Liu
 
 // This is a C# program
+// This is a C# course assignment.
 
 using System;
 using System.Collections.Generic;
