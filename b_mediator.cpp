@@ -95,7 +95,7 @@ class Component_1 : public ComponentBase {
         }
 
         void Register() {
-            m_mediator->RegisterComponent(std::make_unique<Component_1>(*this));   // <ComponentBase>(*this));  <<-- this is wrong
+            m_mediator->RegisterComponent(std::make_unique<Component_1>(*this));
         }
 
         int get_id() override {return m_id;}
