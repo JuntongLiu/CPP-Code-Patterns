@@ -76,7 +76,7 @@ std::list<std::unique_ptr<Memento>> Command::m_mementoList;
 std::list<std::unique_ptr<Command>> Command::m_commandList;
 
 void Command::execute(int i) { 
-    if(m_index + 1 > MAX_NUM_UNDO){ 
+    if(m_index + 1 > MAX_NUM_UNDO){   // only keep MAX_NUM_UNDO, older will be overwrite 
         m_mementoList.pop_front();
         m_commandList.pop_front();
         m_index--;
@@ -114,7 +114,7 @@ void Command::redo(){
 
 void Command::undo(){ 
     if(m_index == 1){
-        auto  tmp = m_commandList.end();  // can use .back().end() 
+        auto  tmp = m_commandList.end();  // can use .back().get() 
         Command *cmd = (*--tmp).get();
         cmd->m_object->set_accum(0); 
         std::cout << "\nUndo() is executed, now m_accum = " << cmd->m_object->get_accum() << '\n' << '\n'; 
