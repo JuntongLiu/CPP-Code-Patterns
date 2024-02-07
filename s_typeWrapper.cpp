@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 
+class TypeBar;
+class TypeFoo;
+
 class Concept{
     public:
         ~Concept() = default;
@@ -40,7 +43,48 @@ class TypeWrapper{
         std::shared_ptr<Concept> object;
 };
 
-struct TypeBar{
+
+// ===========================================================================
+// Or, put all together, we make a sigle type wrapper class (same as above):
+//============================================================================
+
+class TypeWrapper 
+{ 
+    public:
+    
+        template <typename T> 
+        TypeWrapper(T&& obj): object(std::make_shared<Model<T>>(std::forward<T>(obj))){}    
+
+        std::string interfaceFunc()  const {    // can have more if needed  
+            return object->interfaceFunc();
+        }
+
+        struct Concept {
+            virtual ~Concept() {}
+            virtual std::string interfaceFunc() = 0; 
+        };
+
+        template< typename T >
+        struct Model : Concept {
+                Model(const T& t) : object(t) {}
+                std::string interfaceFunc() override {  
+                    return object.interfaceFunc();
+                }
+
+            private:
+                T object;
+        };
+
+    private:    
+        std::shared_ptr<Concept> object;
+};
+
+// Then we can declare a vector which contains different types actually.
+std::vector<TypeWrapper> typeList{};
+
+// Different types:
+
+class TypeBar{                 // type 1
     public:
         TypeBar(double x, double y) : x{x}, y{y}{}
 
@@ -61,7 +105,7 @@ struct TypeBar{
         double sum;
 };
 
-struct TypeFoo{
+class TypeFoo{              // type 2
     public:
         TypeFoo(int x, int y) : x{x}, y{y}{};
 
@@ -81,9 +125,9 @@ struct TypeFoo{
         int y;
         int mult;
 }; 
+// .... more types.
 
-// ...
-
+// Client codes to use the typeWrapper list with different types, ...
 
 
 
