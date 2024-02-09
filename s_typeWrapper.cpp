@@ -1,6 +1,8 @@
 /* 
  * Juntong Liu 
- *          2023-July-10 
+ *          2023-July-10
+ * 
+ * A way to wrap different types.
  * 
  */
 
@@ -14,7 +16,7 @@ class TypeFoo;
 
 class Concept{
     public:
-        ~Concept() = default;
+        virtual ~Concept() = default;
         virtual std::string InterfaceFunc() = 0;    
 };
 
@@ -45,7 +47,7 @@ class TypeWrapper{
 
 
 // ===========================================================================
-// Or, put all together, we make a sigle type wrapper class (same as above):
+// Or, put all together, we make a sigle typeWrapper class (same as above):
 //============================================================================
 
 class TypeWrapper 
@@ -79,55 +81,55 @@ class TypeWrapper
         std::shared_ptr<Concept> object;
 };
 
-// Then we can declare a vector which contains different types actually.
+// Then we can declare a vector which contains different types objects.
 std::vector<TypeWrapper> typeList{};
 
 // Different types:
 
 class TypeBar{                 // type 1
     public:
-        TypeBar(double x, double y) : x{x}, y{y}{}
+        TypeBar(double x, double y) : m_x{x}, m_y{y}{}
 
         std::string InterfaceFunc() {
-            std::cout << "x = " << x << ", y = " << y << '\n'; 
+            std::cout << "x = " << m_x << ", y = " << m_y << '\n'; 
             std::cout << "in TypeBar, sum = " << getSum() << '\n'; 
             return "Module TypeBar has been executed!";
         }   
         
         double getSum() { 
-            sum = x + y; 
-            return sum;
+            m_sum = m_x + m_y; 
+            return m_sum;
         }
 
     private:
-        double x;
-        double y;
-        double sum;
+        double m_x;
+        double m_y;
+        double m_sum;
 };
 
 class TypeFoo{              // type 2
     public:
-        TypeFoo(int x, int y) : x{x}, y{y}{};
+        TypeFoo(int x, int y) : m_x{x}, m_y{y}{};
 
         std::string InterfaceFunc() {
-            std::cout << "x = " << x << ", y = " << y << '\n'; 
+            std::cout << "x = " << m_x << ", y = " << m_y << '\n'; 
             getResult();
             return "Module TypeFoo has been executed!";
         }
 
         void getResult() {
-            mult = x * y;
-            std::cout << "In TypeFoo, multiply get : " << mult << '\n';
+            m_mult = m_x * m_y;
+            std::cout << "In TypeFoo, multiply get : " << m_mult << '\n';
         }
 
     private:
-        int x;
-        int y;
-        int mult;
+        int m_x;
+        int m_y;
+        int m_mult;
 }; 
 // .... more types.
 
-// Client codes to use the typeWrapper list with different types, ...
+// Client codes to use the typeWrapper list with different types objects, ...
 
 
 
