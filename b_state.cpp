@@ -2,12 +2,10 @@
  * Juntong Liu 
  *           2024-Feb-28
  * 
- * A finite state-machine with 5 states.
+ * State machines and try out something with it.
  * 
- * This file contains 2 implementations, ALT_1 and ALT_2.
+ * ALT_1 implementation and ALT_2 implementation. 
  * 
- * ALT_1 implementation uses a little more memory.
- * ALT_2 implementation uses a little less memory and should be a little little bit faster. But may not suite for some situations.
  * 
  * */
 
@@ -147,9 +145,9 @@ int main() {
 	StateBackward backwardState{};
 
 	StateBase *machine_states[] = {&stopState, &playingState, &pauseState, &forwardState, &backwardState};
-	void(Machine::*mfuncp[])(StateBase **) = {&Machine::stop, &Machine::play,     // waste memory, not necessary. Keep this here for lookup
-											                      &Machine::pause, &Machine::forward, 
-                                            &Machine::backward}; 
+	void(Machine::*mfuncp[])(StateBase **) = {&Machine::stop, &Machine::play,     // waste memory, not necessary. Leave it here for now
+						  &Machine::pause, &Machine::forward, 
+                                                  &Machine::backward}; 
 	Machine machine(machine_states[0]);
 
 	int u_in;
@@ -168,16 +166,16 @@ int main() {
 		
 				switch(u_in){
 					case STATE_STOP:
-						(machine.*mfuncp[STATE_STOP])(machine_states);        // can directly use machine.stop(machine_states);
+						machine.stop(machine_states);
 						break;
 					case STATE_PLAYING:
-						(machine.*mfuncp[STATE_PLAYING])(machine_states);     
+						machine.play(machine_states);     
 						break;
 					case STATE_PAUSE:
-						(machine.*mfuncp[STATE_PAUSE])(machine_states);     
+						machine.pause(machine_states);     
 						break;
 					case STATE_FORWARD:
-						(machine.*mfuncp[STATE_FORWARD])(machine_states);    
+						machine.forward(machine_states);    
 						break;
 					case STATE_BACKWARD:
 						(machine.*mfuncp[STATE_BACKWARD])(machine_states);
