@@ -13,6 +13,7 @@
 #ifdef ALT_1
 
 #include <iostream>
+#include <limits>
 
 enum STATES{
 	STATE_STOP,         //  
@@ -136,6 +137,40 @@ class Machine {
 
 };
 
+class UserInput{
+    public:
+        double getNumber(){
+            while(true){
+                double user_in{};
+                //std::cout << "Enter a number: ";
+                std::cin >> user_in;
+
+                // Check for failed extraction
+                if (!std::cin) // if the previous extraction failed.  Same as:  if(std::cin.fail())
+                {
+                    if (std::cin.eof()) // if the stream was closed
+                    {
+                        exit(0);        // shut down the program now
+                    }
+
+                    // let's handle the failure
+                    std::cin.clear();   // put us back in 'normal' operation mode
+                    ignoreLine();       // and remove the bad input
+
+                    std::cout << "Oops, input is invalid.  Please try again.\n\n";
+                }
+                else
+                {
+                    ignoreLine();      // remove any extraneous input
+                    return user_in;
+                }
+            }
+        }
+        void ignoreLine() {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }   
+};
+
 int main() {
 	
 	StateStop stopState{};
@@ -149,55 +184,51 @@ int main() {
 						  &Machine::pause, &Machine::forward, 
                                                   &Machine::backward}; 
 	Machine machine(machine_states[0]);
-
-	int u_in;
-	std::cout << "\nEnter an Event: \n";
-	std::cout << "0: StopEvent, 1: PlayEvent, 2: PauseEvent, 3: ForwardEvent, 4: BackwardEvent, 999 to quit\n";
-	std::cin >> u_in;
-
-	while(1){
-		std::cout << "You have entered: " << u_in << '\n';
-
-		if(u_in == 999)
-			break;
-
-		if (u_in == STATE_STOP || u_in == STATE_PLAYING || u_in == STATE_PAUSE || u_in == STATE_FORWARD 
-			|| u_in == STATE_BACKWARD) {
-		
-				switch(u_in){
-					case STATE_STOP:
-						machine.stop(machine_states);
-						break;
-					case STATE_PLAYING:
-						machine.play(machine_states);     
-						break;
-					case STATE_PAUSE:
-						machine.pause(machine_states);     
-						break;
-					case STATE_FORWARD:
-						machine.forward(machine_states);    
-						break;
-					case STATE_BACKWARD:
-						(machine.*mfuncp[STATE_BACKWARD])(machine_states);
-						break;
-					default:
-						std::cout << "Error happend!\n";
-				}
-			}
-			else
-				std::cout << "You have typed in an invalid number! Try again!\n";
-			std::cout << "\nEnter an Event:\n";
+	UserInput uinput;
+	double user_in;
+	while(true){
+		while(true){
 			std::cout << "0: StopEvent, 1: PlayEvent, 2: PauseEvent, 3: ForwardEvent, 4: BackwardEvent, 999 to quit\n";
-			std::cin >> u_in;
+			std::cout << "\nEnter an Event: ";
+			user_in = uinput.getNumber();
+
+			if(u_in == 999)
+				return 0;
+
+			if (u_in == STATE_STOP || u_in == STATE_PLAYING || u_in == STATE_PAUSE || u_in == STATE_FORWARD 
+				|| u_in == STATE_BACKWARD) {
+				break;
+			else
+				std::cout << "Invalid event number! Try again: \n";
+		}
+		int u_in = static_cast<int>(user_in);
+		switch(u_in){
+			case STATE_STOP:
+				machine.stop(machine_states);
+				break;
+			case STATE_PLAYING:
+				machine.play(machine_states);     
+				break;
+			case STATE_PAUSE:
+				machine.pause(machine_states);     
+				break;
+			case STATE_FORWARD:
+				machine.forward(machine_states);    
+				break;
+			case STATE_BACKWARD:
+				(machine.*mfuncp[STATE_BACKWARD])(machine_states);
+				break;
+			default:
+				std::cout << "Error happend!\n";
+		}
 	}
-
-	return 0;
-
+	return 0;	
 }
 
 #elif defined ALT_2
 
 #include <iostream>
+#include <limits>
 
 enum STATES{
 	STATE_STOP,         //  
@@ -304,52 +335,82 @@ class Machine {
 
 };
 
+class UserInput{
+    public:
+        double getNumber(){
+            while(true){
+                double user_in{};
+                //std::cout << "Enter a number: ";
+                std::cin >> user_in;
+
+                // Check for failed extraction
+                if (!std::cin) // if the previous extraction failed.  Same as:  if(std::cin.fail())
+                {
+                    if (std::cin.eof()) // if the stream was closed
+                    {
+                        exit(0);        // shut down the program now
+                    }
+
+                    // let's handle the failure
+                    std::cin.clear();   // put us back in 'normal' operation mode
+                    ignoreLine();       // and remove the bad input
+
+                    std::cout << "Oops, input is invalid.  Please try again.\n\n";
+                }
+                else
+                {
+                    ignoreLine();      // remove any extraneous input
+                    return user_in;
+                }
+            }
+        }
+        void ignoreLine() {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }   
+};
+
 int main() {
 
 	Machine machine{};
+	UserInput uinput{};
+	double user_in{};
 
-	int u_in;
-	std::cout << "\nEnter an Event: \n";
-	std::cout << "0: StopEvent, 1: PlayEvent, 2: PauseEvent, 3: ForwardEvent, 4: BackwardEvent, 999 to quit\n";
-	std::cin >> u_in;
-
-	while(1){
-		std::cout << "You have entered: " << u_in << '\n';
-
-		if(u_in == 999)
-			break;
-
-		if (u_in == STATE_STOP || u_in == STATE_PLAYING || u_in == STATE_PAUSE || u_in == STATE_FORWARD 
-			|| u_in == STATE_BACKWARD) {
-		
-				switch(u_in){
-					case STATE_STOP:
-						machine.stop();
-						break;
-					case STATE_PLAYING:
-						machine.play();     
-						break;
-					case STATE_PAUSE:
-						machine.pause();     
-						break;
-					case STATE_FORWARD:
-						machine.forward();    
-						break;
-					case STATE_BACKWARD:
-						machine.backward();
-						break;
-					default:
-						std::cout << "Error happend!\n";
-				}
-			}
-			else
-				std::cout << "You have typed in an invalid number! Try again!\n";
-
-			std::cout << "\nEnter an Event:\n";
+	while(true){
+		while(true){
 			std::cout << "0: StopEvent, 1: PlayEvent, 2: PauseEvent, 3: ForwardEvent, 4: BackwardEvent, 999 to quit\n";
-			std::cin >> u_in;
-	}
+			std::cout << "\nEnter an Event: ";
+			user_in = uinput.getNumber();
+			if(user_in == 999)
+				return 0;
 
+			if (u_in == STATE_STOP || u_in == STATE_PLAYING || u_in == STATE_PAUSE || u_in == STATE_FORWARD 
+				|| u_in == STATE_BACKWARD)
+				break;
+			else
+				std::cout << "Invalid event number! Try again.\n";
+		}
+
+		int u_in = static_cast<int>(user_in);
+		switch(u_in){
+			case STATE_STOP:
+				machine.stop();
+				break;
+			case STATE_PLAYING:
+				machine.play();     
+				break;
+			case STATE_PAUSE:
+				machine.pause();     
+				break;
+			case STATE_FORWARD:
+				machine.forward();    
+				break;
+			case STATE_BACKWARD:
+				machine.backward();
+				break;
+			default:
+				std::cout << "Error happend!\n";
+		}
+	}
 	return 0;
 }
 
