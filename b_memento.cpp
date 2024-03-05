@@ -95,6 +95,10 @@ void Command::execute(int i) {
 }
 
 void Command::redo(){ 
+    if(m_index == 0){
+        std::cout << "No command has been excuted! \n";
+        return;
+    }
     if(m_index + 1 > MAX_NUM_UNDO){
         m_mementoList.pop_front();
         m_commandList.pop_front();
