@@ -14,6 +14,7 @@
 #include <functional>
 #include <vector>
 #include <list>
+#include <limits>
 
 #define MAX_NUM_UNDO  100     // maximum number of undo that can be performed.
 
@@ -150,36 +151,77 @@ void Command::undo(){
         std::cout << "Can not execute undo, no command has be execute!"  << '\n';
 };   
 
+class UserInput{
+    public:
+        double getNumber(){
+            while(true){
+                double user_in{};
+                //std::cout << "Enter a number: ";
+                std::cin >> user_in;
+
+                // Check for failed extraction
+                if (!std::cin) // if the previous extraction failed.  Same as:  if(std::cin.fail())
+                {
+                    if (std::cin.eof()) // if the stream was closed
+                    {
+                        exit(0); // shut down the program now
+                    }
+
+                    // let's handle the failure
+                    std::cin.clear(); // put us back in 'normal' operation mode
+                    ignoreLine();     // and remove the bad input
+
+                    std::cout << "Oops, input is invalid.  Please try again.\n\n";
+                }
+                else
+                {
+                    ignoreLine(); // remove any extraneous input
+                    return user_in;
+                }
+            }
+        }
+
+        void ignoreLine() {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }   
+};
 
 int main(){
     
     Object object(0);
-    int i;
-    std::cout << "\n Enter a command:  \n 0 : Quite,  \n 1 : accumulator plus one,  \n 2 : accumulator multiply two, \n 3 : REDO, \n 4 : UNDO" << '\n' << '\n';
-    std::cin >> i;
-
     Command cmd1(&object, &Object::func1);   // plus 1
     Command cmd2(&object, &Object::func2);   // multiply 2
+    UserInput uinput{};
+    double user_in{};
 
-    while(i != 0){
-        if (i == 1){
-            cmd1.execute(i);
+    while(true){
+        while(true){
+            std::cout << "\n Enter a command:  \n 0 : Quite,  \n 1 : accumulator plus one,  \n 2 : accumulator multiply two, \n 3 : REDO, \n 4 : UNDO" << '\n' << '\n';
+            user_in = uinput.getNumber();
+
+            if(user_in == 0)
+                return 0;
+            else if (user_in == 1 || user_in == 2 || user_in == 3 || user_in == 4)
+                break;
+            else
+                std::cout << "Invalid command! Try again: \n";
         }
-        else if (i==2){
-            cmd2.execute(i);
+   
+        if (user_in == 1){
+            cmd1.execute(user_in);
         }
-        else if(i==3){
+        else if (user_in == 2){
+            cmd2.execute(user_in);
+        }
+        else if(user_in == 3){
             Command::redo();
         }
-        else if(i==4){
+        else if(user_in == 4){
             Command::undo();
         }
         else
-            std::cout << "Wrong command!, Try again" << '\n';
-
-
-        std::cout << "\n Enter a command:  \n 0 : Quite,  \n 1 : accumulator plus one,  \n 2 : accumulator multiply two, \n 3 : REDO, \n 4 : UNDO"  << '\n' << '\n';
-        std::cin >> i;
+            std::cout << "Error happened!\n";
     }
+    
     return 0;
 }
