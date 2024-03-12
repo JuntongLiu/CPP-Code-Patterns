@@ -2,7 +2,7 @@
  * Juntong Liu 
  *          2023-July-10
  * 
- * A way to wrap different types.
+ * A way to wrap different types objects.
  * 
  */
 
