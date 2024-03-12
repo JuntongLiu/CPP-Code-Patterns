@@ -14,6 +14,7 @@
 class TypeBar;
 class TypeFoo;
 
+#if 0
 class Concept{
     public:
         virtual ~Concept() = default;
@@ -44,7 +45,7 @@ class TypeWrapper{
     private:
         std::shared_ptr<Concept> object;
 };
-
+#endif
 
 // ===========================================================================
 // Or, put all together, we make a sigle typeWrapper class (same as above):
@@ -81,8 +82,6 @@ class TypeWrapper
         std::shared_ptr<Concept> object;
 };
 
-// Then we can declare a vector which contains different types objects.
-std::vector<TypeWrapper> typeList{};
 
 // Different types:
 
@@ -90,7 +89,7 @@ class TypeBar{                 // type 1
     public:
         TypeBar(double x, double y) : m_x{x}, m_y{y}{}
 
-        std::string InterfaceFunc() {
+        std::string interfaceFunc() {
             std::cout << "x = " << m_x << ", y = " << m_y << '\n'; 
             std::cout << "in TypeBar, sum = " << getSum() << '\n'; 
             return "Module TypeBar has been executed!";
@@ -111,7 +110,7 @@ class TypeFoo{              // type 2
     public:
         TypeFoo(int x, int y) : m_x{x}, m_y{y}{};
 
-        std::string InterfaceFunc() {
+        std::string interfaceFunc() {
             std::cout << "x = " << m_x << ", y = " << m_y << '\n'; 
             getResult();
             return "Module TypeFoo has been executed!";
@@ -129,7 +128,21 @@ class TypeFoo{              // type 2
 }; 
 // .... more types.
 
-// Client codes to use the typeWrapper list with different types objects, ...
+// Client codes to use the typeWrapper list with different types objects
+int main(){
+    std::vector<std::shared_ptr<TypeWrapper>> differentObjectList{};
+    TypeFoo fobj(6, 6);
+    std::shared_ptr<TypeWrapper> twp2 = std::make_shared<TypeWrapper>(fobj);
+    differentObjectList.push_back(twp2);
+    
+    differentObjectList.push_back(std::make_shared<TypeWrapper>(TypeBar(1.1, 2.2)));
+    //differentObjectList.push_back(std::make_shared<TypeWrapper>(*std::make_shared<TypeFoo>(3, 3))); // do not work
+    std::shared_ptr<TypeBar> bptr = std::make_shared<TypeBar>(5.5, 5.5);          // OK
+    std::shared_ptr<TypeWrapper> twp = std::make_shared<TypeWrapper>(*bptr);
+    differentObjectList.push_back(twp);
 
+    for (size_t i{0}; i<differentObjectList.size(); i++)
+        differentObjectList[i]->interfaceFunc();
 
-
+    return 0;
+}
