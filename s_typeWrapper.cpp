@@ -130,7 +130,9 @@ class TypeFoo{              // type 2
 
 // Client codes to use the typeWrapper list with different types objects
 int main(){
+    // declare a vector which can be used to store different types objects.
     std::vector<std::shared_ptr<TypeWrapper>> differentObjectList{};
+    
     TypeFoo fobj(6, 6);
     std::shared_ptr<TypeWrapper> twp2 = std::make_shared<TypeWrapper>(fobj);
     differentObjectList.push_back(twp2);
