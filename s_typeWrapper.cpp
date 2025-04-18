@@ -56,7 +56,7 @@ class TypeWrapper
     public:
     
         template <typename T> 
-        TypeWrapper(T&& obj): object(std::make_shared<Model<T>>(std::forward<T>(obj))){}    
+        TypeWrapper(T&& obj): object{std::make_shared<Model<T>>(std::forward<T>(obj))}{}
 
         std::string interfaceFunc()  const {    // can have more if needed  
             return object->interfaceFunc();
