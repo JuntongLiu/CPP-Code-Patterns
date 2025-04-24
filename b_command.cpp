@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 class CommandBase {
     public:
@@ -25,7 +26,7 @@ class CommandBase {
 template <typename CmdCodeT>
 class Commands : public CommandBase {  
     public:
-        typedef void (CmdCodeT::* Action)();     // or use thypedef std::function<void()> Action;
+        typedef void (CmdCodeT::* Action)();     // or typedef std::function<void()> Action;
         Commands(std::unique_ptr<CmdCodeT> receiver, Action action) 
             : m_receiver{std::move(receiver)}, m_action{action} { }
         
@@ -51,6 +52,7 @@ class CommandAction_1 {
         }
         void do_something_1() {std::cout << "Command execute command-code-set-1 CommandAction_1::do_something_1" << '\n';};
         void do_something_2() {std::cout << "Command execute command-code-set-1 CommandAction_1::do_something_2" << '\n';};
+        //...
 };
 
 class CommandAction_2 {   
@@ -63,7 +65,7 @@ class CommandAction_2 {
         }
         void do_something_1() {std::cout << "Command execute command-code-set-2 CommandAction_2::do_something_1\n";};
         void do_something_2() {std::cout << "Command execute command-code-set-2 CommandAction_2::do_something_2" << '\n';};
-
+        //...
 };
 
 // ....
@@ -76,9 +78,16 @@ int main() {
   std::unique_ptr<Commands<CommandAction_2>> command2 = std::make_unique<Commands<CommandAction_2>>(std::move(cmd_code_2), &CommandAction_2::action);
   // Execute the commands.  
   command1->execute();
-  command2->execute();  
+  command2->execute();
 
-  // Or: 
+  // Or put them onto a vector or list
+  std::vector<CommandBase *> execurators{};
+  execurators.push_back(command1.get());
+  execurators.push_back(command2.get());
+  for(CommandBase *el : execurators)
+      el->execute();
+
+  // Or just do: 
   Commands cmd1 =  Commands(std::move(cmd_code_1), &CommandAction_1::action);
   Commands cmd2 =  Commands(std::move(cmd_code_2), &CommandAction_2::action);
   // Execute the commands.  
