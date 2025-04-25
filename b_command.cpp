@@ -88,8 +88,8 @@ int main() {
       el->execute();
 
   // Or just do: 
-  Commands cmd1 =  Commands(std::move(cmd_code_1), &CommandAction_1::action);
-  Commands cmd2 =  Commands(std::move(cmd_code_2), &CommandAction_2::action);
+  Commands cmd1{Commands(std::move(cmd_code_1), &CommandAction_1::action)};
+  Commands cmd2{Commands(std::move(cmd_code_2), &CommandAction_2::action)};
   // Execute the commands.  
   cmd1.execute();
   cmd2.execute();
